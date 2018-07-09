@@ -17,4 +17,8 @@ module axondemo  {
     requires spring.rabbit;
     requires com.rabbitmq.client;
     requires javax.transaction.api;
+    requires tomcat.embed.core;
+    requires fastjson;
+    requires spring.core;
+    requires spring.data.rest.core;
 }
