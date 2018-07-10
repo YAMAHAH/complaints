@@ -1,9 +1,11 @@
 package com.axon.axondemo.queryside.handler;
 
+import com.axon.axondemo.commandside.event.order.OrderCancelledEvent;
+import com.axon.axondemo.commandside.event.order.OrderConfirmedEvent;
 import com.axon.axondemo.commandside.event.order.OrderCreatedEvent;
 import com.axon.axondemo.queryside.entity.OrderEntry;
 import com.axon.axondemo.queryside.entity.OrderProductEntry;
-import com.axon.axondemo.queryside.repository.OrderEntryRepository;
+import com.axon.axondemo.queryside.repository.saga.OrderEntryRepository;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,27 @@ public class OrderEventHandler {
                             product.getAmount()));
         });
         OrderEntry order = new OrderEntry(event.getOrderId().toString(), event.getUsername(),payment[0], map);
+        repository.save(order);
+    }
+    @EventHandler
+    public void on(OrderConfirmedEvent event){
+        OrderEntry order = repository.findById(event.getId().getIdentifier()).get();
+        if(order==null){
+            LOGGER.error("Cannot find order with id {}", order.getId());
+            return;
+        }
+        order.setStatus("confirmed");
+        repository.save(order);
+    }
+
+    @EventHandler
+    public void on(OrderCancelledEvent event){
+        OrderEntry order = repository.findById(event.getId().getIdentifier()).get();
+        if(order==null){
+            LOGGER.error("Cannot find order with id {}", order.getId());
+            return;
+        }
+        order.setStatus("cancelled");
         repository.save(order);
     }
 

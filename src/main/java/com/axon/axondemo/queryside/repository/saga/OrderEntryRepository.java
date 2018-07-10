@@ -1,4 +1,4 @@
-package com.axon.axondemo.queryside.repository;
+package com.axon.axondemo.queryside.repository.saga;
 
 import com.axon.axondemo.queryside.entity.OrderEntry;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RepositoryRestResource(collectionResourceRel = "orders", path = "orders")
-public interface OrderEntryRepository extends PagingAndSortingRepository<OrderEntry, String> {
+public interface OrderEntryRepository extends PagingAndSortingRepository<OrderEntry,String>{
+        //PagingAndSortingRepository<OrderEntry, String> {
 }

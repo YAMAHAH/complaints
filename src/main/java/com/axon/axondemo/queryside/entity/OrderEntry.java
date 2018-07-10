@@ -15,7 +15,8 @@ public class OrderEntry {
     @JoinColumn(name = "order_id")
     @MapKey(name = "id")
     private Map<String, OrderProductEntry> products;
-
+    @Column
+    private String status = "reserving";
     public OrderEntry() {
     }
 
@@ -24,6 +25,13 @@ public class OrderEntry {
         this.username = username;
         this.payment = payment;
         this.products = products;
+    }
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getId() {

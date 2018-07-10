@@ -2,7 +2,9 @@ package com.axon.axondemo.commandside.handler.order;
 
 import com.axon.axondemo.commandside.aggregate.order.OrderAggregate;
 import com.axon.axondemo.commandside.aggregate.product.ProductAggregate;
+import com.axon.axondemo.commandside.command.order.ConfirmOrderCommand;
 import com.axon.axondemo.commandside.command.order.CreateOrderCommand;
+import com.axon.axondemo.commandside.command.order.RollbackOrderCommand;
 import com.axon.axondemo.domain.model.OrderProduct;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.Aggregate;
@@ -40,6 +42,18 @@ public class OrderHandler {
                             number));
         });
         repository.newInstance(() -> new OrderAggregate(command.getOrderId(), command.getUsername(), products));
+    }
+
+    @CommandHandler
+    public void handle(RollbackOrderCommand command){
+        Aggregate<OrderAggregate> aggregate = repository.load(command.getOrderId().getIdentifier());
+        aggregate.execute(aggregateRoot->aggregateRoot.delete());
+    }
+
+    @CommandHandler
+    public void handle(ConfirmOrderCommand command){
+        Aggregate<OrderAggregate> aggregate = repository.load(command.getId().getIdentifier());
+        aggregate.execute(aggregateRoot->aggregateRoot.confirm());
     }
 }
 
